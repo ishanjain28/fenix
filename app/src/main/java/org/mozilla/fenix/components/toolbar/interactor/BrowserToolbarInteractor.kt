@@ -4,6 +4,7 @@
 
 package org.mozilla.fenix.components.toolbar.interactor
 
+import mozilla.components.browser.state.state.TabSessionState
 import mozilla.components.ui.tabcounter.TabCounterMenu
 import org.mozilla.fenix.components.toolbar.BrowserToolbarController
 import org.mozilla.fenix.components.toolbar.BrowserToolbarMenuController
@@ -26,7 +27,7 @@ interface BrowserToolbarInteractor {
     /**
      * Navigates to the Home screen. Called when a user taps on the Home button.
      */
-    fun onHomeButtonClicked()
+    fun onHomeButtonClicked(tab: TabSessionState)
 }
 
 /**
@@ -74,7 +75,7 @@ class DefaultBrowserToolbarInteractor(
         browserToolbarController.handleReaderModePressed(enabled)
     }
 
-    override fun onHomeButtonClicked() {
-        browserToolbarController.handleHomeButtonClick()
+    override fun onHomeButtonClicked(tab: TabSessionState) {
+        browserToolbarController.handleHomeButtonClick(tab)
     }
 }

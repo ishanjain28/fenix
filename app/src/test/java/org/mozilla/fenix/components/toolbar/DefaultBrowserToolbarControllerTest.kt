@@ -18,6 +18,7 @@ import mozilla.components.browser.state.action.BrowserAction
 import mozilla.components.browser.state.action.ContentAction
 import mozilla.components.browser.state.action.TabListAction
 import mozilla.components.browser.state.state.BrowserState
+import mozilla.components.browser.state.state.TabSessionState
 import mozilla.components.browser.state.state.createTab
 import mozilla.components.browser.state.store.BrowserStore
 import mozilla.components.concept.engine.EngineView
@@ -360,7 +361,8 @@ class DefaultBrowserToolbarControllerTest {
         assertNull(Events.browserToolbarHomeTapped.testGetValue())
 
         val controller = createController()
-        controller.handleHomeButtonClick()
+        val tab: TabSessionState = mockk { every { content.private } returns true }
+        controller.handleHomeButtonClick(tab)
 
         verify { navController.navigate(BrowserFragmentDirections.actionGlobalHome()) }
         assertNotNull(Events.browserToolbarHomeTapped.testGetValue())

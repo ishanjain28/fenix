@@ -10,6 +10,7 @@ import mozilla.components.browser.state.selector.findCustomTabOrSelectedTab
 import mozilla.components.browser.state.selector.getNormalOrPrivateTabs
 import mozilla.components.browser.state.selector.selectedTab
 import mozilla.components.browser.state.state.SessionState
+import mozilla.components.browser.state.state.TabSessionState
 import mozilla.components.browser.state.store.BrowserStore
 import mozilla.components.concept.engine.EngineView
 import mozilla.components.feature.tabs.TabsUseCases
@@ -46,7 +47,7 @@ interface BrowserToolbarController {
     /**
      * @see [BrowserToolbarInteractor.onHomeButtonClicked]
      */
-    fun handleHomeButtonClick()
+    fun handleHomeButtonClick(tab: TabSessionState)
 }
 
 class DefaultBrowserToolbarController(
@@ -170,13 +171,16 @@ class DefaultBrowserToolbarController(
         }
     }
 
-    override fun handleHomeButtonClick() {
+    override fun handleHomeButtonClick(tab: TabSessionState) {
         Events.browserToolbarHomeTapped.record(NoExtras())
         browserAnimator.captureEngineViewAndDrawStatically {
             navController.navigate(
                 BrowserFragmentDirections.actionGlobalHome()
             )
         }
+        onCloseTab.invoke(tab)
+        tabsUseCases.removeTab(tab.id)
+
     }
 
     companion object {

@@ -79,7 +79,10 @@ class BrowserFragment : BaseBrowserFragment(), UserInteractionHandler {
             )!!,
             contentDescription = context.getString(R.string.browser_toolbar_home),
             iconTintColorResource = ThemeManager.resolveAttribute(R.attr.textPrimary, context),
-            listener = browserToolbarInteractor::onHomeButtonClicked
+            listener = {
+                getCurrentTab()?.let { tab -> tab as? TabSessionState }
+                    ?.let { browserToolbarInteractor.onHomeButtonClicked(it) }
+            }
         )
 
         browserToolbarView.view.addNavigationAction(homeAction)

@@ -181,7 +181,6 @@ class DefaultBrowserToolbarController(
         }
         onCloseTab.invoke(tab)
         tabsUseCases.removeTab(tab.id)
-
     }
 
     companion object {

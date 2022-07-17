@@ -344,7 +344,8 @@ abstract class BaseBrowserFragment :
                 )
             },
             onCloseTab = { closedSession ->
-                val closedTab = store.state.findTab(closedSession.id) ?: return@DefaultBrowserToolbarController
+                val closedTab =
+                    store.state.findTab(closedSession.id) ?: return@DefaultBrowserToolbarController
 
                 val snackbarMessage = if (closedTab.content.private) {
                     requireContext().getString(R.string.snackbar_private_tab_closed)
@@ -981,8 +982,8 @@ abstract class BaseBrowserFragment :
     @VisibleForTesting
     internal fun shouldPullToRefreshBeEnabled(inFullScreen: Boolean): Boolean {
         return FeatureFlags.pullToRefreshEnabled &&
-            requireContext().settings().isPullToRefreshEnabledInBrowser &&
-            !inFullScreen
+                requireContext().settings().isPullToRefreshEnabledInBrowser &&
+                !inFullScreen
     }
 
     @VisibleForTesting
@@ -1095,7 +1096,12 @@ abstract class BaseBrowserFragment :
 
                 val toolbarHeight = resources.getDimensionPixelSize(R.dimen.browser_toolbar_height)
                 val context = requireContext()
-                resumeDownloadDialogState(selectedTab.id, context.components.core.store, context, toolbarHeight)
+                resumeDownloadDialogState(
+                    selectedTab.id,
+                    context.components.core.store,
+                    context,
+                    toolbarHeight
+                )
             }
         } else {
             view?.let { view -> initializeUI(view) }
@@ -1140,10 +1146,10 @@ abstract class BaseBrowserFragment :
     @CallSuper
     override fun onBackPressed(): Boolean {
         return findInPageIntegration.onBackPressed() ||
-            fullScreenFeature.onBackPressed() ||
-            promptsFeature.onBackPressed() ||
-            sessionFeature.onBackPressed() ||
-            removeSessionIfNeeded()
+                fullScreenFeature.onBackPressed() ||
+                promptsFeature.onBackPressed() ||
+                sessionFeature.onBackPressed() ||
+                removeSessionIfNeeded()
     }
 
     override fun onBackLongPressed(): Boolean {
@@ -1214,9 +1220,10 @@ abstract class BaseBrowserFragment :
                 true
             } else {
                 val hasParentSession = session is TabSessionState && session.parentId != null
-                if (hasParentSession) {
-                    requireComponents.useCases.tabsUseCases.removeTab(session.id, selectParentIfExists = true)
-                }
+                requireComponents.useCases.tabsUseCases.removeTab(
+                    session.id,
+                    selectParentIfExists = hasParentSession
+                )
                 // We want to return to home if this session didn't have a parent session to select.
                 val goToOverview = !hasParentSession
                 !goToOverview
@@ -1479,8 +1486,8 @@ abstract class BaseBrowserFragment :
     }
 
     // This method is called in response to native web extension messages from
-    // content scripts (e.g the reader view extension). By the time these
-    // messages are processed the fragment/view may no longer be attached.
+// content scripts (e.g the reader view extension). By the time these
+// messages are processed the fragment/view may no longer be attached.
     internal fun safeInvalidateBrowserToolbarView() {
         runIfFragmentIsAttached {
             val toolbarView = _browserToolbarView

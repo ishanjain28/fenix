@@ -5,9 +5,11 @@
 package org.mozilla.fenix.components.toolbar
 
 import io.mockk.MockKAnnotations
+import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockk
 import io.mockk.verify
+import mozilla.components.browser.state.state.TabSessionState
 import mozilla.components.ui.tabcounter.TabCounterMenu
 import org.junit.Before
 import org.junit.Test
@@ -76,8 +78,9 @@ class DefaultBrowserToolbarInteractorTest {
 
     @Test
     fun onHomeButtonClicked() {
-        interactor.onHomeButtonClicked()
+        val tab: TabSessionState = mockk { every { content.private } returns true }
+        interactor.onHomeButtonClicked(tab)
 
-        verify { browserToolbarController.handleHomeButtonClick() }
+        verify { browserToolbarController.handleHomeButtonClick(tab) }
     }
 }
